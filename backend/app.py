@@ -3,13 +3,23 @@
 import numpy as np
 import joblib  # For loading the serialized model
 import pandas as pd  # For data manipulation
+import os
 from flask import Flask, request, jsonify  # For creating the Flask API
 
 # Initialize Flask app with a name
 superkart_api = Flask("SuperKart")
 
+# Resolve model file location dynamically
+model_filename = "superkart_model.joblib"
+if os.path.exists(model_filename):
+    model_path = model_filename
+elif os.path.exists(os.path.join("backend", model_filename)):
+    model_path = os.path.join("backend", model_filename)
+else:
+    model_path = model_filename # fallback to original
+
 # Load the trained model
-model = joblib.load("superkart_model.joblib")
+model = joblib.load(model_path)
 
 # Define a route for the home page
 @superkart_api.get('/')
